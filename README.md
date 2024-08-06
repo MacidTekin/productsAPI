@@ -1,0 +1,2 @@
+# PRODUCTSAPI
+Proje web api projesidir asp.net core ile yazılmış veritabanı sqlite kullanılmıştır. Projede ApiController , veri ekleme silme güncelleme sorgulama yapılmaktadır. DTO,JWT,JWT verification içermektedir. Javascript ve Asp.Net Core ile API Testleri yapılmıştır.

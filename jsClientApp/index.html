@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- Ürünleri ve belirli bir ürünü getirmek için butonlar ve giriş yapma butonu -->
+    <button onclick="getProducts()">Get Products</button>
+    <button onclick="getProductById()">Get Product</button>
+    <button onclick="login()">Login</button>
+
+    <div id="divProducts">
+    </div>
+
+    <script>
+        // Kullanıcı girişini yapacak fonksiyon
+        const login = async () => {
+            const response = await fetch("http://localhost:5019/api/users/login", {
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify({ email: 'mcdtkn35@gmail.com', password: '123456'}) // Giriş bilgilerini JSON formatında gönder
+            });
+            const result = await response.json(); // JSON formatında yanıt al
+            localStorage.setItem("token", JSON.stringify(result.token)); // Tokenı localStorage içerisinde sakla
+            // console.log(result);
+        }
+
+        // Tüm ürünleri getirecek fonksiyon
+        const getProducts = async () => {
+            const response = await fetch("http://localhost:5019/api/Products");
+            const products = await response.json(); // Ürünleri JSON formatında al
+            console.log(products);
+            displayProducts(products); // Ürünleri ekranda göster
+        }
+
+        // Belirli bir ürünü ID ile getirecek fonksiyon
+        const getProductById = async () => {
+            const token = JSON.parse(localStorage.getItem("token")); // localStorage'dan token'ı al
+            const response = await fetch("http://localhost:5019/api/products/4", {
+                headers: { Authorization: `Bearer ${token}` } // Yetkilendirme başlığını ekle
+            });
+            const product = await response.json(); // Ürünü JSON formatında al
+            displayProduct(product); // Ürünü ekranda göster
+        }
+
+        // Tek bir ürünü ekranda gösterecek fonksiyon
+        const displayProduct = (product) => {
+            const parent = document.getElementById("divProducts");
+
+            parent.innerHTML = `
+                <div>
+                    <h5>${product.productName}</h5>
+                    <p>${product.price}</p>
+                </div>
+            `;
+        }
+
+        // Tüm ürünleri ekranda gösterecek fonksiyon
+        const displayProducts = (products) => {
+            const parent = document.getElementById("divProducts");
+
+            products.forEach(prd => {
+                parent.innerHTML += `
+                    <div>
+                        <h5>${prd.productName}</h5>
+                        <p>${prd.price}</p>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
